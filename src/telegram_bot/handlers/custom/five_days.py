@@ -21,12 +21,14 @@ class Five(StatesGroup):
 async def now_command_init(message: Message, state: FSMContext):
     await state.clear()
     await state.set_state(Five.init)
+    assert message.from_user is not None
     if await check_position(message.from_user.id):
         location = await get_users_coord(message.from_user.id)
         if location:
             await state.update_data(coord_state=location)
             await message.reply(
-                f"Ваша последняя геопозиция по адресу:\n{await define_address(coord=location[:2])}",
+                f"Ваша последняя геопозиция по адресу:"
+                f"\n{await define_address(coord=location[:2])}",
                 reply_markup=ReplyKeyboardRemove(),
             )
             await message.reply_location(location[0], location[1])
@@ -45,11 +47,13 @@ async def now_command_init(message: Message, state: FSMContext):
 
 @five_router.message(F.location, Five.init)
 async def now_command_loc_new(message: Message, state: FSMContext):
+    assert message.location is not None
+    assert message.from_user is not None
     coord: tuple[float, float] = (
         message.location.latitude,
         message.location.longitude,
     )
-    result: dict = await get_weather_five_day(coord=coord)
+    result: dict | None = await get_weather_five_day(coord=coord)
     if result:
         await add_coord(coord_with_user_id=(*coord, message.from_user.id))
         await standard.generate_five_answer(
@@ -63,9 +67,10 @@ async def now_command_loc_new(message: Message, state: FSMContext):
 @five_router.message(F.text == "Старая Геопозиция", Five.init)
 async def now_command_loc_old(message: Message, state: FSMContext):
     await state.clear()
+    assert message.from_user is not None
     coord = await get_users_coord(message.from_user.id)
     if coord:
-        result: dict = await get_weather_five_day(coord=coord)
+        result: dict | None = await get_weather_five_day(coord=coord)
         if result:
             await add_coord(coord_with_user_id=(*coord, message.from_user.id))
             await standard.generate_five_answer(

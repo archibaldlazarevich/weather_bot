@@ -4,8 +4,15 @@ import aiohttp
 
 from src.config.config import API_KEY
 
-now_url = "https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API_KEY}&lang=ru&units=metric"
-five_day_url = "https://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&lang=ru&appid={API_KEY}&lang=ru&units=metric"
+now_url = (
+    "https://api.openweathermap.org/data/2.5/weather?lat="
+    "{latitude}&lon={longitude}&appid={API_KEY}&lang=ru&units=metric"
+)
+five_day_url = (
+    "https://api.openweathermap.org/data/2.5/forecast?lat="
+    "{latitude}&lon={longitude}&lang=ru&appid="
+    "{API_KEY}&lang=ru&units=metric"
+)
 
 
 async def aiohttp_session(url: str):

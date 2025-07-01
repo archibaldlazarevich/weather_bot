@@ -1,33 +1,37 @@
 import time
-from typing import Any, Awaitable, Callable, Dict
+from typing import Any, Awaitable, Callable, Dict, cast
 
-from aiogram import BaseMiddleware, Bot, Dispatcher
-from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, Update
+from aiogram import BaseMiddleware
+from aiogram.types import Message, TelegramObject, Update
 
 
 class Middleware(BaseMiddleware):
     async def __call__(
         self,
         handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
-        event: Message,
+        event: TelegramObject,
         data: Dict[str, Any],
     ) -> Any:
 
-        state: FSMContext = data.get("state")
+        message = cast(Message, event)
+
+        state = data.get("state")
+        assert state is not None
         state_data = await state.get_state()
-        text = event.text or ""
+        text = message.text or ""
         if text.startswith("/") and state_data is not None:
             await state.clear()
-            dp: Dispatcher = data.get("dispatcher")
-            bot: Bot = data.get("bot")
+            dp = data.get("dispatcher")
+            assert dp is not None
+            bot = data.get("bot")
+            assert bot is not None
             update_id = data.get("update_id")
             if update_id is None:
                 update_id = int(time.time() * 1000)
 
-            update = Update(update_id=update_id, message=event)
+            update = Update(update_id=update_id, message=message)
             if dp:
                 await dp.feed_update(bot=bot, update=update)
-                return
+                return None
 
-        return await handler(event, data)
+        return await handler(message, data)

@@ -3,6 +3,7 @@
 """
 
 import asyncio
+
 from geopy.geocoders import Nominatim
 
 geolocator = Nominatim(
@@ -26,7 +27,10 @@ async def define_address(coord: tuple[float, float]) -> str | None:
     if not location:
         return '"Местоположение не определено"'
     if "locality" in location.raw["address"]:
-        answer = f"около н.п. {location.raw['address']['locality']}, {location.raw['address']['city']}"
+        answer = (
+            f"около н.п. {location.raw['address']['locality']},"
+            f" {location.raw['address']['city']}"
+        )
     elif "village" in location.raw["address"]:
         answer = f"д. {location.raw['address']['village']}"
     elif "town" in location.raw["address"]:

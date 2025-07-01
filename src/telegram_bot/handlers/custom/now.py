@@ -21,12 +21,14 @@ class Now(StatesGroup):
 async def now_command_init(message: Message, state: FSMContext):
     await state.clear()
     await state.set_state(Now.init)
+    assert message.from_user is not None
     if await check_position(message.from_user.id):
         location = await get_users_coord(message.from_user.id)
         if location:
             await state.update_data(coord_state=location)
             await message.reply(
-                f"Ваша последняя геопозиция по адресу:\n{await define_address(coord=location[:2])}",
+                f"Ваша последняя геопозиция по адресу:\n"
+                f"{await define_address(coord=location[:2])}",
                 reply_markup=ReplyKeyboardRemove(),
             )
             await message.reply_location(location[0], location[1])
@@ -45,6 +47,8 @@ async def now_command_init(message: Message, state: FSMContext):
 
 @now_router.message(F.location, Now.init)
 async def now_command_loc_new(message: Message, state: FSMContext):
+    assert message.location is not None
+    assert message.from_user is not None
     coord: tuple[float, float] = (
         message.location.latitude,
         message.location.longitude,
@@ -68,6 +72,7 @@ async def now_command_loc_new(message: Message, state: FSMContext):
 @now_router.message(F.text == "Старая Геопозиция", Now.init)
 async def now_command_loc_old(message: Message, state: FSMContext):
     await state.clear()
+    assert message.from_user is not None
     coord = await get_users_coord(message.from_user.id)
     if coord:
         result = await get_weather_for_now(coord=coord)

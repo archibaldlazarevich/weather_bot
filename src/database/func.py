@@ -31,8 +31,10 @@ async def add_new_user(user_id: int):
 
 async def check_position(user_id: int) -> None | tuple[float, float]:
     """
-    Метод для проверки наличия последней геопозиции пользователя, если геопозиции нет,
-    то возвращает id пользоваетеля, если нет пользователя, то добавляет его id в бд, и возвращает id
+    Метод для проверки наличия последней
+    геопозиции пользователя, если геопозиции нет,
+    то возвращает id пользоваетеля, если нет
+     пользователя, то добавляет его id в бд, и возвращает id
     :param user_id: id пользователя из телеграмма
     :return: bool | tuple[float, float]
     """
@@ -51,7 +53,8 @@ async def check_position(user_id: int) -> None | tuple[float, float]:
 async def add_coord(coord_with_user_id: tuple) -> None:
     """
     Добавление координат последней геопозиции пользователя
-    :param coord_with_user_id: координаты пользователя (latitude, longitude, city_id, user_id)
+    :param coord_with_user_id: координаты
+    пользователя (latitude, longitude, city_id, user_id)
     :return:
     """
     async with get_db_session() as session:
