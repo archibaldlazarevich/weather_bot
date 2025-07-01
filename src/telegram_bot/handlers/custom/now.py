@@ -1,15 +1,13 @@
-import datetime
-
-from aiogram import Router, F
+from aiogram import F, Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, ReplyKeyboardRemove
 
 import src.telegram_bot.handlers.custom.standard_func as standard
 import src.telegram_bot.keyboards.reply as rep
 from src.api.weather_api import get_weather_for_now
-from src.database.func import check_position, get_users_coord, add_coord
+from src.database.func import add_coord, check_position, get_users_coord
 from src.geolocator.geolocator import define_address
 
 now_router = Router()
@@ -54,12 +52,13 @@ async def now_command_loc_new(message: Message, state: FSMContext):
     result = await get_weather_for_now(coord=coord)
     if result:
         await add_coord(coord_with_user_id=(*coord, message.from_user.id))
-        place_data = await define_address(coord= coord)
+        place_data = await define_address(coord=coord)
         await state.clear()
         await message.reply(
-            f'Прогноз погоды в {place_data} на {result['time']}:\n'
+            f"Прогноз погоды в {place_data} на {result['time']}:\n"
             f"- {result['description']}\n"
-            f"- {result['temp']}°C", reply_markup=ReplyKeyboardRemove()
+            f"- {result['temp']}°C",
+            reply_markup=ReplyKeyboardRemove(),
         )
     else:
         await state.clear()
@@ -76,9 +75,10 @@ async def now_command_loc_old(message: Message, state: FSMContext):
             place_data = await define_address(coord=coord)
             await add_coord(coord_with_user_id=(*coord, message.from_user.id))
             await message.reply(
-                f'Прогноз погоды в {place_data} на {result['time']}:\n'
+                f"Прогноз погоды в {place_data} на {result['time']}:\n"
                 f"- {result['description']}\n"
-                f"- {result['temp']}°C", reply_markup=ReplyKeyboardRemove()
+                f"- {result['temp']}°C",
+                reply_markup=ReplyKeyboardRemove(),
             )
         else:
             await state.clear()

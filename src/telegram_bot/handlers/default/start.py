@@ -2,6 +2,7 @@ from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove
+
 from src.config.config import DEFAULT_COMMANDS
 from src.database.func import check_position
 

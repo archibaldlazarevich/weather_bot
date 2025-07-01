@@ -1,9 +1,9 @@
 import time
+from typing import Any, Awaitable, Callable, Dict
 
-from aiogram import BaseMiddleware, Dispatcher, Bot
+from aiogram import BaseMiddleware, Bot, Dispatcher
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, Update
-from typing import Callable, Dict, Any, Awaitable
 
 
 class Middleware(BaseMiddleware):

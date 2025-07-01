@@ -1,9 +1,8 @@
-import asyncio
 import datetime
 
-from src.config.config import API_KEY
-
 import aiohttp
+
+from src.config.config import API_KEY
 
 now_url = "https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API_KEY}&lang=ru&units=metric"
 five_day_url = "https://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&lang=ru&appid={API_KEY}&lang=ru&units=metric"
@@ -25,7 +24,7 @@ async def get_weather_for_now(coord: tuple[float, float]) -> dict | None:
         )
     )
     if isinstance(result, int):
-        return
+        return None
     data = {
         "time": datetime.datetime.now().strftime("%d.%m.%Y \nвремя - %H:%M"),
         "description": result["weather"][0]["description"].capitalize(),
@@ -41,7 +40,7 @@ async def get_weather_five_day(coord: tuple[float, float]) -> dict | None:
         )
     )
     if isinstance(result, int):
-        return
+        return None
     data = dict()
     for i in result.get("list"):
         if datetime.datetime.fromtimestamp(i["dt"]).hour == 12:

@@ -1,5 +1,5 @@
-import threading
 import subprocess
+import threading
 
 
 def run_script(script_name):

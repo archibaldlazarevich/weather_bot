@@ -1,13 +1,14 @@
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import (
-    AsyncSession,
     AsyncEngine,
+    AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
 from sqlalchemy.pool import NullPool
-from typing import AsyncGenerator
+
 from src.config.config import DATABASE_URL
 from src.database.models import Base
 

@@ -1,13 +1,13 @@
-from aiogram import Router, F
+from aiogram import F, Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, ReplyKeyboardRemove
 
 import src.telegram_bot.handlers.custom.standard_func as standard
 import src.telegram_bot.keyboards.reply as rep
 from src.api.weather_api import get_weather_five_day
-from src.database.func import check_position, get_users_coord, add_coord
+from src.database.func import add_coord, check_position, get_users_coord
 from src.geolocator.geolocator import define_address
 
 five_router = Router()
@@ -52,7 +52,9 @@ async def now_command_loc_new(message: Message, state: FSMContext):
     result: dict = await get_weather_five_day(coord=coord)
     if result:
         await add_coord(coord_with_user_id=(*coord, message.from_user.id))
-        await standard.generate_five_answer(message= message, coord= coord, result= result)
+        await standard.generate_five_answer(
+            message=message, coord=coord, result=result
+        )
     else:
         await state.clear()
         await standard.error_db(message=message, state=state)
@@ -66,7 +68,9 @@ async def now_command_loc_old(message: Message, state: FSMContext):
         result: dict = await get_weather_five_day(coord=coord)
         if result:
             await add_coord(coord_with_user_id=(*coord, message.from_user.id))
-            await standard.generate_five_answer(message= message, coord= coord, result= result)
+            await standard.generate_five_answer(
+                message=message, coord=coord, result=result
+            )
 
         else:
             await state.clear()

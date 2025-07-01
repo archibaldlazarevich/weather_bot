@@ -5,10 +5,9 @@ import time
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand, BotCommandScopeDefault
 
-
 from src.config.config import BOT_TOKEN, DEFAULT_COMMANDS
-from src.telegram_bot.handlers.custom.now import now_router
 from src.telegram_bot.handlers.custom.five_days import five_router
+from src.telegram_bot.handlers.custom.now import now_router
 from src.telegram_bot.handlers.default.help import help_router
 from src.telegram_bot.handlers.default.start import start_router
 from src.telegram_bot.middlewares.middleware import Middleware

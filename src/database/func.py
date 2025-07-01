@@ -1,4 +1,4 @@
-from sqlalchemy import select, insert, update
+from sqlalchemy import insert, select, update
 
 from src.database.create_db import get_db_session
 from src.database.models import User
