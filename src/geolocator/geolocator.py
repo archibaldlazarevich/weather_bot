@@ -11,7 +11,7 @@ geolocator = Nominatim(
 )
 
 
-async def define_address(coord: tuple[float, float]) -> int | None:
+async def define_address(coord: tuple[float, float]) -> str | None:
     """
     Метод для определения города по координатам,
     запроса к бд для получения id города в бд city
@@ -23,4 +23,16 @@ async def define_address(coord: tuple[float, float]) -> int | None:
     location = await asyncio.to_thread(
         geolocator.reverse, coord, language="ru"
     )
-    return location
+    if not location:
+        return '"Местоположение не определено"'
+    if 'locality' in location.raw['address']:
+        answer = f'около н.п. {location.raw['address']['locality']}, {location.raw['address']['city']}'
+    elif 'village' in location.raw['address']:
+        answer = f'д. {location.raw['address']['village']}'
+    elif 'town' in location.raw['address']:
+        answer = f'г. {location.raw['address']['town']}'
+    elif 'city' in location.raw['address']:
+        answer = f'г. {location.raw['address']['city']}'
+    else:
+        answer = location
+    return answer

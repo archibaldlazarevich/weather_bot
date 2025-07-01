@@ -40,8 +40,8 @@ async def check_position(user_id: int) -> None | tuple[float, float]:
     check_user = await check_user_id(user_id=user_id)
     if check_user:
         return (
-            (check_user.user_latitude, check_user.user_longitude)
-            if check_user.user_latitude
+            (check_user.latitude, check_user.longitude)
+            if check_user.latitude
             else None
         )
     await add_new_user(user_id=user_id)

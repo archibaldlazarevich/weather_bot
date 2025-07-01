@@ -53,10 +53,13 @@ async def now_command_loc_new(message: Message, state: FSMContext):
     )
     result = await get_weather_for_now(coord=coord)
     if result:
+        await add_coord(coord_with_user_id=(*coord, message.from_user.id))
+        place_data = await define_address(coord= coord)
+        await state.clear()
         await message.reply(
-            f'Прогноз погоды в {result["city"]} на данные по {result['time']}:\n'
-            f"- {result['description']}"
-            f"- {result['temp']}°C"
+            f'Прогноз погоды в {place_data} на {result['time']}:\n'
+            f"- {result['description']}\n"
+            f"- {result['temp']}°C", reply_markup=ReplyKeyboardRemove()
         )
     else:
         await state.clear()
@@ -66,15 +69,16 @@ async def now_command_loc_new(message: Message, state: FSMContext):
 @now_router.message(F.text == "Старая Геопозиция", Now.init)
 async def now_command_loc_old(message: Message, state: FSMContext):
     await state.clear()
-    coord = get_users_coord(message.from_user.id)
+    coord = await get_users_coord(message.from_user.id)
     if coord:
         result = await get_weather_for_now(coord=coord)
         if result:
+            place_data = await define_address(coord=coord)
             await add_coord(coord_with_user_id=(*coord, message.from_user.id))
             await message.reply(
-                f'Прогноз погоды в {result["city"]} на данные по {result['time']}:\n'
-                f"- {result['description']}"
-                f"- {result['temp']}°C"
+                f'Прогноз погоды в {place_data} на {result['time']}:\n'
+                f"- {result['description']}\n"
+                f"- {result['temp']}°C", reply_markup=ReplyKeyboardRemove()
             )
         else:
             await state.clear()

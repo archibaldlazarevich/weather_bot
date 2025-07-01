@@ -7,7 +7,9 @@ class Base(DeclarativeBase):
 
 
 class User(Base):
+    __tablename__ = 'user'
+
     id: Mapped[int] = mapped_column(primary_key=True)
-    tel_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    tel_id: Mapped[int] = mapped_column(Integer, nullable=True, unique=True)
     latitude: Mapped[float] = mapped_column(Float, nullable=True)
     longitude: Mapped[float] = mapped_column(Float, nullable=True)

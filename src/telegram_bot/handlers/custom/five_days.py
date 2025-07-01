@@ -6,7 +6,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 
 import src.telegram_bot.handlers.custom.standard_func as standard
 import src.telegram_bot.keyboards.reply as rep
-from src.api.weather_api import get_weather_for_now, get_weather_five_day
+from src.api.weather_api import get_weather_five_day
 from src.database.func import check_position, get_users_coord, add_coord
 from src.geolocator.geolocator import define_address
 
@@ -17,7 +17,7 @@ class Five(StatesGroup):
     init: State = State()
 
 
-@five_router.message(Command("now"))
+@five_router.message(Command("5_days"))
 async def now_command_init(message: Message, state: FSMContext):
     await state.clear()
     await state.set_state(Five.init)
@@ -49,14 +49,10 @@ async def now_command_loc_new(message: Message, state: FSMContext):
         message.location.latitude,
         message.location.longitude,
     )
-    result = await get_weather_for_now(coord=coord)
+    result: dict = await get_weather_five_day(coord=coord)
     if result:
         await add_coord(coord_with_user_id=(*coord, message.from_user.id))
-        await message.reply(
-            f'Прогноз погоды в {result["city"]} на данные по {result['time']}:\n'
-            f"- {result['description']}"
-            f"- {result['temp']}°C"
-        )
+        await standard.generate_five_answer(message= message, coord= coord, result= result)
     else:
         await state.clear()
         await standard.error_db(message=message, state=state)
@@ -69,15 +65,8 @@ async def now_command_loc_old(message: Message, state: FSMContext):
     if coord:
         result: dict = await get_weather_five_day(coord=coord)
         if result:
-            await message.reply(
-                f"Прогноз погоды в {result.pop('city')} на ближайшие 5 дней."
-            )
-            for key, value in result:
-                await message.reply(
-                    f"Прогноз погоды на {key}:\n"
-                    f"- {value['description']}"
-                    f"- {value['temp']}°C"
-                )
+            await add_coord(coord_with_user_id=(*coord, message.from_user.id))
+            await standard.generate_five_answer(message= message, coord= coord, result= result)
 
         else:
             await state.clear()

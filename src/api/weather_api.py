@@ -5,8 +5,8 @@ from src.config.config import API_KEY
 
 import aiohttp
 
-now_url = "https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&lang=ru&appid={API_KEY}&units=metric"
-five_day_url = "https://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&lang=ru&appid={API_KEY}&units=metric"
+now_url = "https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API_KEY}&lang=ru&units=metric"
+five_day_url = "https://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&lang=ru&appid={API_KEY}&lang=ru&units=metric"
 
 
 async def aiohttp_session(url: str):
@@ -27,10 +27,9 @@ async def get_weather_for_now(coord: tuple[float, float]) -> dict | None:
     if isinstance(result, int):
         return
     data = {
-        "time": datetime.datetime.now().strftime("%d.%m.%Y, %H:%M"),
-        "description": result["weather"][0]["main"],
+        "time": datetime.datetime.now().strftime("%d.%m.%Y \nвремя - %H:%M"),
+        "description": result["weather"][0]["description"].capitalize(),
         "temp": result["main"]["temp"],
-        "city": result["name"],
     }
     return data
 
@@ -45,14 +44,9 @@ async def get_weather_five_day(coord: tuple[float, float]) -> dict | None:
         return
     data = dict()
     for i in result.get("list"):
-        data["city"] = result["city"]["name"]
         if datetime.datetime.fromtimestamp(i["dt"]).hour == 12:
-            data[i["dt_txt"]] = {
+            data[datetime.datetime.fromtimestamp(i["dt"])] = {
                 "templ": i["main"]["temp"],
-                "description": i["weather"][0]["main"],
+                "description": i["weather"][0]["description"].capitalize(),
             }
     return data
-
-
-asyncio.run(get_weather_for_now((50, 50)))
-asyncio.run(get_weather_five_day((53, 50)))

@@ -30,7 +30,6 @@ async def start_bot():
 
 
 async def main():
-    await asyncio.sleep(200)
     dp.include_routers(start_router, help_router, five_router, now_router)
     dp.startup.register(start_bot)
     dp.message.middleware(Middleware())
@@ -39,7 +38,7 @@ async def main():
         await bot.set_my_description(
             "WeatherBot - Это телеграмм-бот, который предоставляет\n"
             "прогноз погоды по вашему местоположению на текущее\n"
-            "время либо ближайшие пять суток",
+            "время либо на ближайшие пять суток.",
             language_code="ru",
         )
         await dp.start_polling(
@@ -51,7 +50,6 @@ async def main():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    start = time.time()
     try:
         asyncio.run(main())
     except KeyboardInterrupt:

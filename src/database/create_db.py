@@ -13,7 +13,7 @@ from src.database.models import Base
 
 engine: AsyncEngine = create_async_engine(
     DATABASE_URL,
-    echo=True,
+    # echo=True,
     poolclass=NullPool,
 )
 
@@ -24,7 +24,7 @@ async_session_maker: async_sessionmaker[AsyncSession] = async_sessionmaker(
 )
 
 
-# @asynccontextmanager
+@asynccontextmanager
 async def get_db_session() -> AsyncGenerator:
     """
     Функция для возможности доступа к базе данных

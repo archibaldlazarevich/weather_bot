@@ -14,7 +14,7 @@ async def command_start(message: Message, state: FSMContext):
         [f"/{command[0]} - {command[1]}" for command in DEFAULT_COMMANDS]
     )
     await message.reply(
-        f"Бот для получения прогноза погоды.\nКоманды, которые вы можете использовать:"
+        f"Бот для получения прогноза погоды.\nКоманды, которые вы можете использовать:\n"
         f"{commands}",
         reply_markup=ReplyKeyboardRemove(),
     )
