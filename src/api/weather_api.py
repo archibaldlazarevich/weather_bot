@@ -50,7 +50,7 @@ async def get_weather_five_day(coord: tuple[float, float]) -> dict | None:
         return None
     data = dict()
     for i in result.get("list"):
-        if datetime.datetime.fromtimestamp(i["dt"]).hour == 12:
+        if datetime.datetime.fromtimestamp(i["dt"],tz=datetime.timezone.utc).hour == 12:
             data[datetime.datetime.fromtimestamp(i["dt"])] = {
                 "templ": i["main"]["temp"],
                 "description": i["weather"][0]["description"].capitalize(),
